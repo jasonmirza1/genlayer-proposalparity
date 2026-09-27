@@ -1,0 +1,11 @@
+{
+  "schema": "proposalparity.bundle.v1",
+  "chain_id": 61997,
+  "actions": [
+    {
+      "target": "0x1111111111111111111111111111111111111111",
+      "value_wei": "100",
+      "calldata": "0x"
+    }
+  ]
+}
