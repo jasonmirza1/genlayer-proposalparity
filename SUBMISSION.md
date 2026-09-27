@@ -6,7 +6,7 @@ One-liner: Consensus attestation that a written DAO motion matches its exact exe
 
 Description: ProposalParity is a reusable GenLayer contract primitive for governance transparency. A charter stores the target execution chain, exact token/recipient allowlists, raw-unit spending caps, a purpose, and prohibited effects. A proposer pins a written motion and a JSON action bundle to the same full GitHub commit. Validators independently fetch and hash both files, decode supported native and ERC-20 transfers, enforce exact allowlists and aggregate caps, and compare every executable effect with the written motion. The contract stores a nonce-bound ALIGNED, DIVERGENT, or INSUFFICIENT_EVIDENCE attestation with file hashes, action hashes, decoded effects, and per-action reasons. Unsupported calls fail closed. It neither executes transfers nor replaces governance voting or authorization.
 
-Public repository: **TODO — publish this standalone directory**
+Public repository: https://github.com/jasonmirza1/genlayer-proposalparity
 
 Studio Next contract link: **TODO — deploy and verify address**
 

@@ -44,7 +44,7 @@ Full GenVM/Studio consensus verification is still pending. No local GenLayer Stu
 4. Call `attest_proposal` for charter `1`, the locked motion and bundle URLs, and a fresh random 32–64-character lowercase hex nonce. Record its transaction hash.
 5. Wait for finalization. Verify `get_counts().attestations == 1`, inspect `get_attestation("1")`, and confirm the motion/bundle hashes and `ALIGNED` verdict. A `FINALIZED` transaction alone does not prove an attestation was stored.
 
-No Studio Next transaction has been submitted as part of this build. Deployment, fee approval, public repository creation, and Portal submission require separate user action.
+The public source is at https://github.com/jasonmirza1/genlayer-proposalparity. No Studio Next transaction has been submitted as part of this build. Deployment, fee approval, and Portal submission require separate user action.
 
 ## Security boundaries
 
