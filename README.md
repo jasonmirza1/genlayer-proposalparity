@@ -4,7 +4,7 @@ ProposalParity is a standalone GenLayer Intelligent Contract that attests whethe
 
 Unlike the existing IntentScope agent-action gate, this primitive reviews a **multi-action DAO motion** and decodes raw native/ERC-20 transfer calldata before comparing every effect with the published prose.
 
-This repository is a **local prototype, not a deployed or submitted contract**. It does not execute, sign, custody, or authorize any transfers.
+This repository is a contract prototype, not a submitted contribution. It does not execute, sign, custody, or authorize any transfers.
 
 ## Why decentralized judgment is used
 
@@ -32,9 +32,9 @@ python -m pytest tests -q -p no:cacheprovider
 $env:PYTHONIOENCODING='utf-8'; python -m genvm_linter.cli check contracts/proposalparity.py
 ```
 
-The 44 local tests cover native and ERC-20 decoding, allowlists, cap enforcement, opaque calls, chain mismatch, structured discrepancy/uncertainty results, immutable URLs, replay, caller isolation, owner controls, and forged positive results. Tests in `tests/sdk/` use the real SDK with mocked web/model responses and Python execution. They explicitly invoke the captured validator callback to check independent evidence collection, exact-field mismatch rejection even with an always-agree comparator, semantic acceptance/rejection, malformed comparator output, and leader-error rejection. The external semantic comparator is mocked; these tests do not prove model judgment quality, WASM execution, or network consensus.
+The 46 local tests cover native and ERC-20 decoding, allowlists, cap enforcement, opaque calls, chain mismatch, structured discrepancy/uncertainty results, immutable URLs, replay, caller isolation, owner controls, and forged positive results. Tests in `tests/sdk/` use the real SDK with mocked web/model responses and Python execution. They explicitly invoke the captured validator callback to check independent evidence collection, exact-field mismatch rejection even with an always-agree comparator, semantic acceptance/rejection, malformed comparator output, and leader-error rejection. The external semantic comparator is mocked; these tests do not prove model judgment quality, WASM execution, or network consensus.
 
-Full GenVM/Studio consensus verification is still pending. No local GenLayer Studio runtime was installed or running during this validation. Use the Studio Next verification path below and record a stored receipt before publishing any claim of live consensus success.
+The revised contract was deployed on Studio Next at [`0x35A7f3d30c22DF0277c56f0fd3C1036892dbDd75`](https://explorer-studio-next.genlayer.com/address/0x35A7f3d30c22DF0277c56f0fd3C1036892dbDd75). Its [fixture attestation transaction](https://explorer-studio-next.genlayer.com/tx/0xc18d50f722c707eac6916c2b1503b1d972c6e79f1c7a8ebfd772f105ac5c92a8) finalized with consensus Accepted. A finalized-state read returned one charter and one attestation; `get_attestation("1")` reported `ALIGNED`, `evidence_verified: true`, no issues, and a decoded native transfer of 100 raw wei to the fixture recipient. This verifies the fixture path, not judgment quality for arbitrary proposals. The earlier deployment at `0x2d3f82bd1E511503960557C4C7AD77aAC57e43AF` produced an Undetermined round and no stored attestation.
 
 ## Studio Next verification path
 
@@ -44,7 +44,7 @@ Full GenVM/Studio consensus verification is still pending. No local GenLayer Stu
 4. Call `attest_proposal` for charter `1`, the locked motion and bundle URLs, and a fresh random 32–64-character lowercase hex nonce. Record its transaction hash.
 5. Wait for finalization. Verify `get_counts().attestations == 1`, inspect `get_attestation("1")`, and confirm the motion/bundle hashes and `ALIGNED` verdict. A `FINALIZED` transaction alone does not prove an attestation was stored.
 
-The public source is at https://github.com/jasonmirza1/genlayer-proposalparity. No Studio Next transaction has been submitted as part of this build. Deployment, fee approval, and Portal submission require separate user action.
+The public source is at https://github.com/jasonmirza1/genlayer-proposalparity. Do not use the earlier Undetermined transaction as submission evidence. Portal submission remains a separate user action.
 
 ## Security boundaries
 

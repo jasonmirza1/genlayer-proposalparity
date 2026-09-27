@@ -43,7 +43,7 @@ def env():
     gl.public = types.SimpleNamespace(write=lambda f: f, view=lambda f: f)
     gl.vm = types.SimpleNamespace(UserError=ValueError, run_nondet=lambda fn, validator: fn())
     gl.message = types.SimpleNamespace(sender_address=types.SimpleNamespace(as_hex="0xOwner"))
-    gl.nondet = types.SimpleNamespace(web=types.SimpleNamespace(get=get), exec_prompt=lambda *args: json.dumps(state["answer"]))
+    gl.nondet = types.SimpleNamespace(web=types.SimpleNamespace(get=get), exec_prompt=lambda *args, **kwargs: json.dumps(state["answer"]))
     before = sys.modules.get("genlayer")
     sys.modules["genlayer"] = gl
     try:
@@ -223,8 +223,34 @@ def test_post_consensus_forged_alignment_is_rejected(env):
 
 def test_json_fence_is_accepted(env):
     contract, state, _, gl = env
-    gl.nondet.exec_prompt = lambda *args: "```json\n" + json.dumps(state["answer"]) + "\n```"
+    gl.nondet.exec_prompt = lambda *args, **kwargs: "```json\n" + json.dumps(state["answer"]) + "\n```"
     assert contract.attest_proposal("1", MOTION_URL, BUNDLE_URL, NONCE)["verdict"] == "ALIGNED"
+
+
+def test_semantic_assessment_requests_json(env):
+    contract, state, _, gl = env
+    formats = []
+    def prompt(*args, **kwargs):
+        formats.append(kwargs.get("response_format"))
+        return dict(state["answer"])
+    gl.nondet.exec_prompt = prompt
+    assert contract.attest_proposal("1", MOTION_URL, BUNDLE_URL, NONCE)["verdict"] == "ALIGNED"
+    assert formats == ["json"]
+
+
+def test_identical_semantic_failure_needs_no_model_comparison(env):
+    contract, _, _, gl = env
+    def unexpected(*args, **kwargs):
+        pytest.fail("Identical fail-closed results must not invoke the comparator")
+    gl.nondet.exec_prompt = unexpected
+    row = contract._result(
+        "INSUFFICIENT_EVIDENCE", "a" * 64, "b" * 64,
+        [{"target": RECIPIENT, "value_wei": "100", "calldata": "0x"}],
+        [{"index": 1, "kind": "NATIVE_TRANSFER", "recipient": RECIPIENT, "token": "", "amount_raw": "100"}],
+        [], [], "Semantic comparison did not produce complete, usable evidence",
+    )
+    assert contract._agree_results(row, dict(row), contract.get_charter("1")) is True
+    assert contract._agree_results(row, {**row, "summary": "Different failure"}, contract.get_charter("1")) is False
 
 
 def test_matching_unverified_results_need_no_semantic_comparison(env):
